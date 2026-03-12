@@ -1,0 +1,265 @@
+<!DOCTYPE html><html><head>
+      <title>2025-26-gd-3dgd-ica-2.2</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      <link rel="stylesheet" href="file:///c:\Users\niall\.vscode\extensions\shd101wyy.markdown-preview-enhanced-0.8.20\crossnote\dependencies\katex\katex.min.css">
+      
+      
+      
+      
+      
+      <style>
+      code[class*=language-],pre[class*=language-]{color:#333;background:0 0;font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;text-align:left;white-space:pre;word-spacing:normal;word-break:normal;word-wrap:normal;line-height:1.4;-moz-tab-size:8;-o-tab-size:8;tab-size:8;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;hyphens:none}pre[class*=language-]{padding:.8em;overflow:auto;border-radius:3px;background:#f5f5f5}:not(pre)>code[class*=language-]{padding:.1em;border-radius:.3em;white-space:normal;background:#f5f5f5}.token.blockquote,.token.comment{color:#969896}.token.cdata{color:#183691}.token.doctype,.token.macro.property,.token.punctuation,.token.variable{color:#333}.token.builtin,.token.important,.token.keyword,.token.operator,.token.rule{color:#a71d5d}.token.attr-value,.token.regex,.token.string,.token.url{color:#183691}.token.atrule,.token.boolean,.token.code,.token.command,.token.constant,.token.entity,.token.number,.token.property,.token.symbol{color:#0086b3}.token.prolog,.token.selector,.token.tag{color:#63a35c}.token.attr-name,.token.class,.token.class-name,.token.function,.token.id,.token.namespace,.token.pseudo-class,.token.pseudo-element,.token.url-reference .token.variable{color:#795da3}.token.entity{cursor:help}.token.title,.token.title .token.punctuation{font-weight:700;color:#1d3e81}.token.list{color:#ed6a43}.token.inserted{background-color:#eaffea;color:#55a532}.token.deleted{background-color:#ffecec;color:#bd2c00}.token.bold{font-weight:700}.token.italic{font-style:italic}.language-json .token.property{color:#183691}.language-markup .token.tag .token.punctuation{color:#333}.language-css .token.function,code.language-css{color:#0086b3}.language-yaml .token.atrule{color:#63a35c}code.language-yaml{color:#183691}.language-ruby .token.function{color:#333}.language-markdown .token.url{color:#795da3}.language-makefile .token.symbol{color:#795da3}.language-makefile .token.variable{color:#183691}.language-makefile .token.builtin{color:#0086b3}.language-bash .token.keyword{color:#0086b3}pre[data-line]{position:relative;padding:1em 0 1em 3em}pre[data-line] .line-highlight-wrapper{position:absolute;top:0;left:0;background-color:transparent;display:block;width:100%}pre[data-line] .line-highlight{position:absolute;left:0;right:0;padding:inherit 0;margin-top:1em;background:hsla(24,20%,50%,.08);background:linear-gradient(to right,hsla(24,20%,50%,.1) 70%,hsla(24,20%,50%,0));pointer-events:none;line-height:inherit;white-space:pre}pre[data-line] .line-highlight:before,pre[data-line] .line-highlight[data-end]:after{content:attr(data-start);position:absolute;top:.4em;left:.6em;min-width:1em;padding:0 .5em;background-color:hsla(24,20%,50%,.4);color:#f4f1ef;font:bold 65%/1.5 sans-serif;text-align:center;vertical-align:.3em;border-radius:999px;text-shadow:none;box-shadow:0 1px #fff}pre[data-line] .line-highlight[data-end]:after{content:attr(data-end);top:auto;bottom:.4em}html body{font-family:'Helvetica Neue',Helvetica,'Segoe UI',Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ol,html body>ul{margin-bottom:16px}html body ol,html body ul{padding-left:2em}html body ol.no-list,html body ul.no-list{padding:0;list-style-type:none}html body ol ol,html body ol ul,html body ul ol,html body ul ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;background-color:#f0f0f0;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:700;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:700}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::after,html body code::before{letter-spacing:-.2em;content:'\00a0'}html body pre>code{padding:0;margin:0;word-break:normal;white-space:pre;background:0 0;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:after,html body pre code:before,html body pre tt:after,html body pre tt:before{content:normal}html body blockquote,html body dl,html body ol,html body p,html body pre,html body ul{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body code,html body pre{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview ul{list-style:disc}.markdown-preview ul ul{list-style:circle}.markdown-preview ul ul ul{list-style:square}.markdown-preview ol{list-style:decimal}.markdown-preview ol ol,.markdown-preview ul ol{list-style-type:lower-roman}.markdown-preview ol ol ol,.markdown-preview ol ul ol,.markdown-preview ul ol ol,.markdown-preview ul ul ol{list-style-type:lower-alpha}.markdown-preview .newpage,.markdown-preview .pagebreak{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center!important}.markdown-preview:not([data-for=preview]) .code-chunk .code-chunk-btn-group{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .status{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .output-div{margin-bottom:16px}.markdown-preview .md-toc{padding:0}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link div,.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}.markdown-preview .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,.66);border:4px solid rgba(150,150,150,.66);background-clip:content-box}html body[for=html-export]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0;min-height:100vh}@media screen and (min-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px + 2em)}}@media screen and (max-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{font-size:14px!important;padding:1em}}@media print{html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,.66);border:4px solid rgba(150,150,150,.66);background-clip:content-box}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc{padding:0 16px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link div,html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% - 300px);padding:2em calc(50% - 457px - 300px / 2);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+
+      </style>
+      <!-- The content below will be included at the end of the <head> element. --><script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function () {
+    // your code here
+  });
+</script></head><body for="html-export">
+    
+    
+      <div class="crossnote markdown-preview  ">
+      
+<h2 id="3d-game-development--technical-specialisation-2-10">3D Game Development – Technical Specialisation 2 (10%) </h2>
+<h3 id="overview">Overview </h3>
+<p>This assessment evaluates your <strong>developed technical specialisation</strong> within <strong>Unreal Engine</strong> that directly supports your <strong>team’s Collaborative Project (CP)</strong>.</p>
+<p>This is the <strong>Stage 2 extension</strong> of your Stage 1 technical specialisation work. By this point, you are expected to move beyond initial research and early experimentation and show that your chosen Unreal area has developed into a <strong>clear, evidenced, and critically analysed technical contribution</strong> to the group game.</p>
+<p>On completion of Stage 2, you should have:</p>
+<ul>
+<li>Continued and extended the <strong>same Unreal-focused technical specialisation</strong> introduced in Stage 1.</li>
+<li>Produced a <strong>single Mahara page</strong> documenting your area, its relevance to the game, prototypes, iterative development, and critical analysis.</li>
+<li>Produced a <strong>final screencast</strong> demonstrating and explaining your completed technical work.</li>
+<li>Shown that your contribution is technically credible, relevant to the CP, and meaningfully integrated into the project.</li>
+</ul>
+<p>This deliverable checks that your specialisation is not only defined and relevant, but also <strong>substantially developed, evidenced, and critically understood</strong>.</p>
+<hr>
+<h3 id="mahara-portfolio-structure-mandatory">Mahara Portfolio Structure (Mandatory) </h3>
+<p>All work contributing to your <strong>3D Game Development (3DGD)</strong> continuous assessments must remain <strong>completely separate</strong> from your broader Collaborative Project entries.</p>
+<p>For <strong>Stage 2</strong>, you must use the following structure:</p>
+<ol>
+<li><strong>Single Page:</strong>
+<ul>
+<li>Page title: <strong>“3DGD within CP”</strong></li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>This page should represent the continuation and extension of your Stage 1 work.<br>
+It should allow both 3DGD and CP examiners to clearly identify your individual 3DGD technical contribution.<br>
+A weekly reflective journal is <strong>not required</strong> for 3DGD.</p>
+</blockquote>
+<hr>
+<h3 id="mahara-page-requirements-stage-2">Mahara Page Requirements (Stage 2) </h3>
+<p>You must produce <strong>one Mahara page only</strong>, titled exactly:</p>
+<blockquote>
+<p><strong>3DGD within CP</strong></p>
+</blockquote>
+<p>The page must be <strong>no more than 1600 words</strong>.</p>
+<p>Your Mahara page must include the following:</p>
+<h4 id="1-unreal-area-being-examined">1. Unreal Area Being Examined </h4>
+<ul>
+<li>Clearly define the specific <strong>Unreal technical specialisation</strong> being developed.</li>
+<li>This should be more focused and technically precise than in Stage 1.</li>
+<li>Examples may include materials, lighting, Blueprints systems, AI, procedural tools, shaders, UI systems, cinematics, animation systems, optimisation, or technical environment workflows.</li>
+</ul>
+<h4 id="2-relevance-to-the-game">2. Relevance to the Game </h4>
+<ul>
+<li>Explain <strong>how this work supports your team’s Collaborative Project</strong>.</li>
+<li>Clarify <strong>why this technical area matters</strong> to the game experience, production workflow, or final build quality.</li>
+<li>Make your <strong>individual role and contribution</strong> easy to identify.</li>
+</ul>
+<h4 id="3-technical-development">3. Technical Development </h4>
+<ul>
+<li>Present relevant development evidence such as:
+<ul>
+<li>screenshots</li>
+<li>Blueprint snippets</li>
+<li>Material graphs</li>
+<li>system diagrams</li>
+<li>workflow images</li>
+<li>test scenes</li>
+<li>implementation comparisons</li>
+</ul>
+</li>
+<li>Show how the work progressed from early tests into a more complete technical solution.</li>
+</ul>
+<h4 id="4-evidence-of-iterative-development">4. Evidence of Iterative Development </h4>
+<ul>
+<li>Demonstrate that the work developed over time through:
+<ul>
+<li>experimentation</li>
+<li>testing</li>
+<li>revision</li>
+<li>refinement</li>
+<li>response to problems or constraints</li>
+</ul>
+</li>
+<li>The page should make the process visible rather than only showing the final outcome.</li>
+</ul>
+<h4 id="5-critical-analysis-of-the-completed-work">5. Critical Analysis of the Completed Work </h4>
+<ul>
+<li>Evaluate the final result rather than simply describing it.</li>
+<li>Discuss:
+<ul>
+<li>what worked well</li>
+<li>what did not work as expected</li>
+<li>what limitations remain</li>
+<li>what compromises were made</li>
+<li>what you learned</li>
+<li>what you would improve if development continued</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>At this stage, the expectation is not just evidence of activity, but evidence of <strong>development, judgement, and technical understanding</strong>.</p>
+</blockquote>
+<hr>
+<h3 id="screencast-requirements">Screencast Requirements </h3>
+<p>You must submit a <strong>single screencast</strong> of <strong>no more than 8–10 minutes</strong> in duration. The screencast should clearly present your <strong>final technical work</strong> and explain its role within the collaborative project.</p>
+<h4 id="screencast-content">Screencast Content </h4>
+<p>Your private <strong>YouTube</strong> screencast should include:</p>
+<ul>
+<li>A brief explanation of your <strong>technical specialisation</strong>.</li>
+<li>A demonstration of the <strong>completed work in Unreal</strong>.</li>
+<li>A clear explanation of <strong>how it supports the group game</strong>.</li>
+<li>Brief reference to important <strong>prototypes, iterations, or revisions</strong>.</li>
+<li>A short <strong>critical reflection</strong> on strengths, weaknesses, and learning.</li>
+</ul>
+<p>Your screencast should be named using the following format:</p>
+<p><code>2025-26-GD-3DGD-TS2-StudentName</code></p>
+<blockquote>
+<p>The screencast is not just a silent video capture. It should function as a concise, guided technical walkthrough of your completed contribution.</p>
+</blockquote>
+<hr>
+<h3 id="assessment-criteria-weighted">Assessment Criteria (Weighted) </h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Criterion</th>
+<th style="text-align:left">Weight</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Technical Development &amp; Completed Implementation</strong></td>
+<td style="text-align:left"><strong>30%</strong></td>
+<td style="text-align:left">Evidence that the specialisation has progressed into a substantial and credible final technical outcome.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Iterative Development Process</strong></td>
+<td style="text-align:left"><strong>30%</strong></td>
+<td style="text-align:left">Clear evidence of experimentation, testing, revision, refinement, and progression over time.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Critical Analysis &amp; Reflection</strong></td>
+<td style="text-align:left"><strong>30%</strong></td>
+<td style="text-align:left">Thoughtful and technically informed evaluation of the completed work, including strengths, limitations, and future improvements.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Communication &amp; Presentation Quality</strong></td>
+<td style="text-align:left"><strong>10%</strong></td>
+<td style="text-align:left">Mahara page is concise, organised, and professional; screencast is clear, focused, and well explained.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Total:</strong> 100% (worth 10% of overall module grade)</p>
+<hr>
+<h3 id="submission-checklist">Submission Checklist </h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Deliverable</th>
+<th style="text-align:left">Mandatory requirements</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Mahara page</strong></td>
+<td style="text-align:left">One page only, titled <strong>"3DGD within CP"</strong>, maximum <strong>1600 words</strong>, containing all required sections</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Screencast</strong></td>
+<td style="text-align:left">Maximum <strong>8-10 minutes</strong>, accessible, named correctly, and focused on final technical work</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Evidence</strong></td>
+<td style="text-align:left">Includes prototypes, iterative development evidence, and critical analysis</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Project linkage</strong></td>
+<td style="text-align:left">Clearly shows how the work contributes to the collaborative project</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Presentation quality</strong></td>
+<td style="text-align:left">Clear structure, concise writing, appropriate visuals, and technically informed commentary</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>No weekly <strong>reflective journal</strong> is required within this CA component.</p>
+</blockquote>
+<hr>
+<h1 id="appendix-a-assessment-rubric">Appendix A: Assessment Rubric </h1>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Component</th>
+<th style="text-align:left"><strong>E</strong></th>
+<th style="text-align:left"><strong>VG</strong></th>
+<th style="text-align:left"><strong>G</strong></th>
+<th style="text-align:left"><strong>S</strong></th>
+<th style="text-align:left"><strong>P</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Technical Development and Final Implementation (30)</strong></td>
+<td style="text-align:left">Final work is substantial, technically strong, and clearly demonstrates growth from Stage 1 into meaningful implementation.</td>
+<td style="text-align:left">Strong technical development and convincing final implementation with minor gaps.</td>
+<td style="text-align:left">Good implementation with visible progress, though depth or polish may be uneven.</td>
+<td style="text-align:left">Basic implementation present, but limited in scope, depth, or technical confidence.</td>
+<td style="text-align:left">Little meaningful implementation evidence; work remains incomplete or superficial.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Iterative Development Process (30)</strong></td>
+<td style="text-align:left">Excellent evidence of iteration across time; revisions are meaningful and clearly improve the work.</td>
+<td style="text-align:left">Strong evidence of iterative refinement with clear progression.</td>
+<td style="text-align:left">Some clear iteration shown, though evidence may be uneven or incomplete.</td>
+<td style="text-align:left">Limited iteration visible; process is only partly documented.</td>
+<td style="text-align:left">Little or no evidence of iteration; mainly presents a final result without process.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Critical Analysis and Reflection (30)</strong></td>
+<td style="text-align:left">Insightful and technically informed critical analysis; clearly evaluates strengths, limitations, trade-offs, and future improvements.</td>
+<td style="text-align:left">Strong analytical reflection with good technical awareness.</td>
+<td style="text-align:left">Reflection is relevant and competent, though somewhat descriptive in places.</td>
+<td style="text-align:left">Limited reflection; tends toward description rather than analysis.</td>
+<td style="text-align:left">Minimal or no meaningful critical evaluation.</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Communication and Professional Presentation (10)</strong></td>
+<td style="text-align:left">Mahara page is exceptionally clear, concise, and well-structured; screencast is polished, focused, and highly effective.</td>
+<td style="text-align:left">Well-presented written and video submission with only minor weaknesses.</td>
+<td style="text-align:left">Clear overall communication, though some issues of structure, pacing, or concision are present.</td>
+<td style="text-align:left">Communication is adequate but inconsistent, unclear, or weakly structured.</td>
+<td style="text-align:left">Poorly presented, difficult to follow, missing required structure, or inaccessible.</td>
+</tr>
+</tbody>
+</table>
+
+      </div>
+      
+      
+    
+    
+    
+    
+    
+    
+  
+    </body></html>
