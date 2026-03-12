@@ -1,5 +1,6 @@
 ---
-title: "Interior and Exterior Lighting in Unreal Engine 5: A workflow Using UE5 Default Lighting, Lumen, and Post-Processing"
+title: "Hyper-Realistic Interior and Exterior Lighting in Unreal Engine 5"
+subtitle: "A Professional Workflow Using UE5 Default Lighting, Lumen, and Post-Processing"
 author: "Niall McGuinness"
 institute: "Dundalk Institute of Technology"
 programme: "BSc (Hons) in Computing in Games Development"
@@ -7,6 +8,15 @@ module_code: "COMP I8015"
 module_title: "3D Game Development"
 stage: 4
 version: "1.1"
+generated_at: "2026-03-12"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    number-sections: true
+  pdf:
+    toc: true
+    number-sections: true
 ---
 
 <style>
@@ -22,17 +32,19 @@ p {
 pre, code, kbd, samp, li { text-align: left; }
 </style>
 
-# Lab 1: Interior and Exterior Lighting in Unreal Engine 5
-
 ## Overview
 
 This tutorial outlines a practical professional workflow for creating **hyper-realistic interior and exterior lighting** in **Unreal Engine 5** using the engine’s **default lighting system**. The goal is not simply to place a few lights, but to build a lighting setup that feels believable, cinematic, readable, and production-ready.
 
 The workflow combines **Lumen**, physically motivated sky lighting, careful exposure control, post-processing, atmospheric depth, and subtle camera imperfections. Used properly, these help a scene move away from the flat, overly clean, synthetic look that often appears in inexperienced real-time work.
 
-This topic directly supports the module’s focus on **rendering, lighting, shader use, post-processing, and atmosphere design** within 3D game production. In particular, it aligns strongly with the module emphasis on rendering and lighting practice, lighting theory, post-processing, ambient occlusion, volumetric light scattering, and production-level implementation in Unreal Engine. 
+This topic directly supports the module’s focus on **rendering, lighting, shader use, post-processing, and atmosphere design** within 3D game production. In particular, it aligns strongly with the module emphasis on rendering and lighting practice, lighting theory, post-processing, ambient occlusion, volumetric light scattering, and production-level implementation in Unreal Engine. fileciteturn0file0
 
 It also supports the current ICA emphasis on **environmental storytelling**, **storytelling through materials**, **playability**, and the use of lighting as part of a small but polished spatial experience. In a contained room-scale micro-experience, lighting is not decoration. It is one of the main tools used to guide the player, shape mood, reveal surfaces, and communicate world state. 
+
+<a href="./images/lighting/interior_derelict_corridor.jpg" target="_blank" rel="noopener">
+  <img src="./images/lighting/interior_derelict_corridor.jpg" alt="Derelict Corridor -- Jack McKelvie">
+</a>
 
 ## Learning Goals
 
@@ -50,17 +62,30 @@ By the end of this tutorial you should be able to:
 
 ## Before You Begin
 
-This tutorial assumes that you already have a playable Unreal Engine 5 level and that your scene contains at least basic architecture, surfaces, and scale references. Lighting should be developed against actual geometry and materials wherever possible. Empty prototype scenes are useful for testing, but realism is judged through how light interacts with form, roughness, colour, shadow, and atmosphere.
+For this lab, you should build your lighting pass on top of a space that already supports the semester ICA. Use **one** of the following starting points:
 
-For best results, use a test space that contains both **interior and exterior visibility**, such as a room with windows, a doorway, or a courtyard transition. This makes it easier to evaluate exposure, bounce, shadow softness, volumetric effects, and readability across lighting zones.
+| Starting point | What to use it for | Why it is suitable |
+| :- | :- | :- |
+| **Your ICA greybox** | Best option if you already have a room, clue layout, and early puzzle space blocked in | It lets you develop lighting directly against the micro-experience you will refine for assessment |
+| **A CubeGrid corridor or room study** | Good fallback if your ICA room is not yet ready | It gives you a fast controlled space for practising exposure, atmosphere, surface response, and focal lighting |
 
-<a href="./images/lighting/interior_derelict_corridor.jpg" target="_blank" rel="noopener">
-  <img src="./images/lighting/interior_derelict_corridor.jpg" alt="Derelict Corridor -- Jack McKelvie">
-</a>
+This aligns with the ICA requirement that the work remains a **single, contained environment** focused on **environmental storytelling**, **readability**, and **polish within a constrained scope** rather than scale or system complexity. 
+
+This tutorial therefore assumes that your Unreal Engine 5 scene already contains at least basic architecture, surfaces, and scale references. Lighting should be developed against actual geometry and materials wherever possible. Empty prototype scenes are useful for testing, but realism is judged through how light interacts with form, roughness, colour, shadow, and atmosphere.
+
+For best results, use a test space that contains a meaningful transition between zones, such as a room with windows, a doorway, a corridor opening into a chamber, or a partially enclosed exterior threshold. This makes it easier to evaluate exposure, bounce, shadow softness, volumetric effects, and readability across lighting zones.
+
+### Suggested Lab Scope
+
+Keep the spatial scope small. A short corridor leading to a puzzle door, a maintenance passage, a store room, a hospital side room, a security checkpoint, or a service tunnel is enough for this exercise. The goal is not to build more level. The goal is to make a **small amount of level look believable, readable, and atmospheric** in a way that supports the ICA brief. 
 
 ## Workflow Summary
 
+Treat this lab as a **lighting and atmosphere pass**, not a level-building lab. Your main task is to take an existing ICA greybox or a simple CubeGrid corridor study and push it toward a more convincing final-art direction through light, fog, post-process control, and material response. Where possible, preserve the logic of the escape-room brief by ensuring that lighting helps support clue visibility, focal hierarchy, and state change readability. 
+
 The overall workflow used in this tutorial is shown below.
+
+<div align="center">
 
 ```mermaid
 flowchart TD
@@ -71,6 +96,7 @@ flowchart TD
     E --> F[Final tuning and balancing]
     F --> G[Optional day-to-night mood pass]
 ```
+</div>
 
 ## 1. Initial Project Configuration
 
@@ -324,7 +350,7 @@ For night transitions:
 
 ## 10. Lighting as Environmental Storytelling
 
-Within this module, lighting should not be treated as a purely technical finishing pass. It is part of the language of level design and storytelling. The current ICA specifically rewards strong use of **layout, props, materials, lighting, mechanic readability, and polish** within a small space. In that kind of work, lighting helps the player understand where to look, what matters, what has changed, and how the room should feel emotionally.
+Within this module, lighting should not be treated as a purely technical finishing pass. It is part of the language of level design and storytelling. The current ICA specifically rewards strong use of **layout, props, materials, lighting, mechanic readability, and polish** within a small space. In that kind of work, lighting helps the player understand where to look, what matters, what has changed, and how the room should feel emotionally. 
 
 A strong lighting setup can therefore do all of the following at once:
 
@@ -336,7 +362,7 @@ A strong lighting setup can therefore do all of the following at once:
 | Material storytelling | Revealing grime, dampness, wear, residue, age, or maintenance |
 | Spatial legibility | Separating background, path, and focal object |
 
-This is one reason why lighting practice belongs at the centre of 3D game production rather than being treated as optional polish. The module specification explicitly identifies lighting, post-processing, ambient occlusion, volumetric scattering, and related rendering concepts as core indicative content and learning outcomes.
+This is one reason why lighting practice belongs at the centre of 3D game production rather than being treated as optional polish. The module specification explicitly identifies lighting, post-processing, ambient occlusion, volumetric scattering, and related rendering concepts as core indicative content and learning outcomes. fileciteturn0file0
 
 ## 11. Recommended Self-Check
 
@@ -359,3 +385,15 @@ A convincing Unreal Engine 5 lighting workflow is built through **layers**, **co
 The most common mistake is not using too little technology, but using powerful features without discipline. Hyper-realism rarely comes from extreme values. It usually comes from a coherent stack of believable decisions, each one supporting the next.
 
 For your own environment work, especially room-scale assessment work, aim for this question: **does the lighting merely illuminate the space, or does it help explain the space?** When the answer is the latter, the scene usually becomes much stronger both technically and artistically.
+
+
+## 13. Reference Links
+
+Use the following external references to support your own lighting look-development and visual research.
+
+| Resource | Use it for | Link |
+| :- | :- | :- |
+| ArtStation | Collecting professional environment art and level design references, especially for material mood, composition, and lighting ideas | [ArtStation - Environment Design](https://www.artstation.com/search?sort_by=relevance&query=environment%20design) |
+| Poly Haven | Finding a clean HDRI sky for neutral daylight testing, look development, and skylight setup | [Poly Haven - Pure Sky HDRIs](https://polyhaven.com/hdris/skies) |
+
+When using reference, do not copy surface appearance blindly. Instead, study how professional scenes handle **value structure**, **shadow softness**, **sky colour**, **window contrast**, **volumetric depth**, and **material response**.
