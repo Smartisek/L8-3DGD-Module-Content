@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Photometric Units — Interactive Explorer</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+/* ── DARK THEME (default) ─────────────────────── */
+:root {
+  --bg:          #06080d;
+  --panel:       #0b0e17;
+  --panel-sub:   #07090f;
+  --border:      #151c2e;
+  --border-row:  rgba(255,255,255,0.04);
+  --amber:       #f0a020;
+  --amber-dim:   rgba(240,160,32,0.12);
+  --amber-glow:  rgba(240,160,32,0.25);
+  --blue:        #ffd500;
+  --green:       #3dd68c;
+  --text:        #bddafb;
+  --text-dim:    #8ac0f7;
+  --text-bright: #fefeff;
+  --text-muted:  #98b7d7;
+  --overlay-bg:  rgba(11,14,23,0.92);
+  --probe-bg:    rgba(6,10,20,0.96);
+  --tab-bg:      rgba(86, 81, 81, 0.4);
+  --thumb-track: #0f1525;
+}
+
+/* ── LIGHT THEME ──────────────────────────────── */
+[data-theme="light"] {
+  --bg:          #586585;
+  --panel:       #ffffff;
+  --panel-sub:   #f4f6fb;
+  --border:      #d0dae8;
+  --border-row:  rgba(0,0,0,0.06);
+  --amber:       #d08010;
+  --amber-dim:   rgba(208,128,16,0.1);
+  --amber-glow:  rgba(208,128,16,0.2);
+  --blue:        #1a80cc;
+  --green:       #1aaa60;
+  --text:        #3a506a;
+  --text-dim:    #7090b0;
+  --text-bright: #1a2840;
+  --text-muted:  #90aac0;
+  --overlay-bg:  rgba(255,255,255,0.94);
+  --probe-bg:    rgba(245,252,248,0.97);
+  --tab-bg:      rgba(0,0,0,0.05);
+  --thumb-track: #dde4f0;
+}
+
+body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif; height:100vh; display:flex; overflow:hidden; transition:background 0.25s,color 0.25s; }
+
+/* ── LEFT PANEL ───────────────────────────────── */
+.left {
+  width:420px; min-width:420px; background:var(--panel);
+  border-right:1px solid var(--border); display:flex; flex-direction:column;
+  overflow-y:auto; overflow-x:hidden; transition:background 0.25s,border-color 0.25s;
+}
+.left::-webkit-scrollbar { width:3px; }
+.left::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+
+.panel-head {
+  padding:18px 20px 16px; border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.panel-head-left {}
+.panel-eyebrow { font-size:9.5px; letter-spacing:0.22em; text-transform:uppercase; color:var(--text-muted); margin-bottom:2px; }
+.panel-title   { font-size:20px; font-weight:600; color:var(--text-bright); letter-spacing:-0.01em; }
+
+/* THEME TOGGLE */
+.theme-btn {
+  background:var(--panel-sub); border:1px solid var(--border); border-radius:8px;
+  width:34px; height:34px; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  font-size:16px; flex-shrink:0; transition:all 0.18s;
+  color:var(--text-dim);
+}
+.theme-btn:hover { border-color:var(--amber); color:var(--amber); }
+
+.tabs {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:3px;
+  margin:14px 16px 0; background:var(--tab-bg);
+  border-radius:9px; padding:4px; border:1px solid var(--border);
+}
+.tab {
+  background:none; border:none; color:var(--text-muted); font-family:'JetBrains Mono',monospace;
+  font-size:16px; font-weight:500; cursor:pointer; border-radius:6px;
+  padding:8px 4px; transition:all 0.18s; letter-spacing:0.03em;
+}
+.tab:hover { color:var(--text); background:rgba(128,128,128,0.08); }
+.tab.active { background:var(--amber-dim); color:var(--amber); border:1px solid rgba(240,160,32,0.28); box-shadow:0 0 12px rgba(240,160,32,0.08); }
+[data-theme="light"] .tab.active { border-color:rgba(208,128,16,0.35); }
+
+.big-val { display:flex; align-items:baseline; gap:8px; padding:16px 22px 0; }
+.big-num  { font-family:'JetBrains Mono',monospace; font-size:42px; font-weight:700; color:var(--amber); line-height:1; text-shadow:0 0 20px var(--amber-glow); letter-spacing:-0.03em; }
+.big-unit { font-family:'JetBrains Mono',monospace; font-size:15px; color:var(--text-dim); padding-bottom:4px; }
+
+.desc { padding:12px 22px 0; font-size:14px; line-height:1.65; color:var(--text); }
+
+.formula { margin:13px 22px 0; background:var(--panel-sub); border:1px solid var(--border); border-radius:8px; padding:10px 14px; }
+.formula-eyebrow { font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--text-muted); margin-bottom:5px; }
+.formula-eq { font-family:'JetBrains Mono',monospace; font-size:15px; color:var(--blue); }
+
+.controls { padding:14px 22px 0; display:flex; flex-direction:column; gap:16px; }
+.ctrl { display:flex; flex-direction:column; gap:7px; }
+.ctrl-row { display:flex; justify-content:space-between; align-items:baseline; }
+.ctrl-name { font-size:13px; font-weight:500; color:var(--text-bright); letter-spacing:0.02em; }
+.ctrl-val  { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--amber); background:var(--amber-dim); padding:2px 7px; border-radius:4px; }
+
+input[type=range] {
+  -webkit-appearance:none; appearance:none; width:100%; height:3px;
+  border-radius:2px; outline:none;
+  background:linear-gradient(to right,var(--amber) 0%,var(--amber) var(--p,50%),var(--thumb-track) var(--p,50%),var(--thumb-track) 100%);
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance:none; width:15px; height:15px; background:var(--amber);
+  border-radius:50%; cursor:pointer;
+  box-shadow:0 0 0 3px var(--amber-dim),0 0 10px var(--amber-glow); transition:box-shadow 0.15s;
+}
+input[type=range]::-webkit-slider-thumb:hover { box-shadow:0 0 0 5px var(--amber-dim),0 0 16px var(--amber-glow); }
+
+.derived { margin:16px 22px 0; background:var(--panel-sub); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+.derived-eye { font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--text-muted); margin-bottom:8px; }
+.drow { display:flex; justify-content:space-between; align-items:center; padding:5px 0; border-bottom:1px solid var(--border-row); font-size:12px; }
+.drow:last-child { border-bottom:none; }
+.drow-lbl { color:var(--text-dim); }
+.drow-val { font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--text-bright); }
+
+.examples { margin:14px 22px 22px; }
+.ex-eye  { font-size:16px; letter-spacing:0.2em; text-transform:uppercase; color:var(--text-muted); margin-bottom:8px; }
+.ex-item { display:flex; align-items:center; gap:8px; padding:5px 0; font-size:14px; color:var(--text-dim); border-bottom:1px solid var(--border-row); }
+.ex-item:last-child { border-bottom:none; }
+.ex-dot  { width:5px; height:5px; border-radius:50%; background:var(--amber); opacity:0.5; flex-shrink:0; }
+
+/* ── RIGHT PANEL ──────────────────────────────── */
+.right { flex:1; position:relative; overflow:hidden; background:var(--bg); }
+canvas { display:block; width:100%; height:100%; cursor:crosshair; }
+
+/* LIVE READINGS */
+.overlay {
+  position:absolute; top:14px; right:14px;
+  background:var(--overlay-bg); backdrop-filter:blur(12px);
+  border:1px solid var(--border); border-radius:10px; padding:12px 15px; min-width:168px;
+}
+.ov-title { font-size:15px; letter-spacing:0.2em; text-transform:uppercase; color:var(--text-muted); margin-bottom:8px; }
+.ov-row   { display:flex; justify-content:space-between; gap:16px; padding:3px 0; font-size:13px; }
+.ov-lbl   { color:var(--text-dim); }
+.ov-val   { font-family:'JetBrains Mono',monospace; color:var(--text-bright); font-size:13px; }
+.ov-val.hi { color:var(--amber); }
+
+/* PROBE CHIP */
+.probe-chip {
+  position:absolute; display:none;
+  background:var(--probe-bg); border:1px solid var(--green);
+  border-radius:8px; padding:8px 12px; pointer-events:none;
+  backdrop-filter:blur(8px);
+  box-shadow:0 0 16px rgba(61,214,140,0.15),0 2px 10px rgba(0,0,0,0.15);
+  white-space:nowrap; z-index:10;
+}
+[data-theme="light"] .probe-chip { box-shadow:0 0 16px rgba(26,170,96,0.15),0 2px 12px rgba(0,0,0,0.12); }
+.probe-chip.visible { display:block; }
+.probe-title { font-size:12px; letter-spacing:0.18em; text-transform:uppercase; color:var(--green); margin-bottom:4px; opacity:0.75; }
+.probe-lux   { font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:700; color:var(--green); line-height:1; }
+.probe-dist  { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--text-dim); margin-top:3px; }
+.probe-clear { font-size:9px; color:var(--text-muted); margin-top:5px; cursor:pointer; pointer-events:all; text-align:right; }
+.probe-clear:hover { color:#ff5f57; }
+
+/* CLICK HINT */
+.click-hint {
+  position:absolute; bottom:36px; left:50%; transform:translateX(-50%);
+  font-size:10px; letter-spacing:0.13em; text-transform:uppercase;
+  color:var(--text-muted); pointer-events:none;
+  animation:pulseHint 3.5s ease-in-out infinite;
+}
+@keyframes pulseHint { 0%,100%{opacity:0.2} 55%{opacity:0.6} }
+
+/* LEGEND */
+.legend {
+  position:absolute; bottom:14px; left:14px;
+  background:var(--overlay-bg); backdrop-filter:blur(12px);
+  border:1px solid var(--border); border-radius:10px;
+  padding:10px 14px; max-width:265px;
+}
+.leg-title { font-size:12px; letter-spacing:0.2em; text-transform:uppercase; color:var(--text-muted); margin-bottom:6px; }
+.leg-row   { display:flex; align-items:center; gap:8px; padding:2px 0; }
+.leg-dot   { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.leg-lbl   { font-size:11px; color:var(--text-dim); }
+</style>
+</head>
+<body>
+
+<!-- LEFT -->
+<div class="left">
+  <div class="panel-head">
+    <div class="panel-head-left">
+      <div class="panel-eyebrow">Photometric Units</div>
+      <div class="panel-title">Light Measurement Explorer</div>
+    </div>
+    <button class="theme-btn" id="themeBtn" title="Toggle light / dark" onclick="toggleTheme()">☀️</button>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="setMode('lumen')">lm</button>
+    <button class="tab" onclick="setMode('candela')">cd</button>
+    <button class="tab" onclick="setMode('nits')">nit</button>
+    <button class="tab" onclick="setMode('lux')">lx</button>
+  </div>
+
+  <div class="big-val">
+    <div class="big-num" id="bigNum">1600</div>
+    <div class="big-unit" id="bigUnit">lm</div>
+  </div>
+
+  <div class="desc" id="desc"></div>
+
+  <div class="formula">
+    <div class="formula-eyebrow">Formula</div>
+    <div class="formula-eq" id="formulaEq"></div>
+  </div>
+
+  <div class="controls" id="controls"></div>
+  <div class="derived"  id="derived"></div>
+  <div class="examples" id="examples"></div>
+</div>
+
+<!-- RIGHT -->
+<div class="right" id="rightPanel">
+  <canvas id="c"></canvas>
+
+  <div class="overlay">
+    <div class="ov-title">Live Readings</div>
+    <div id="ovRows"></div>
+  </div>
+
+  <div class="probe-chip" id="probeChip">
+    <div class="probe-title">Lux Probe</div>
+    <div class="probe-lux"  id="probeLux">— lx</div>
+    <div class="probe-dist" id="probeDist">d = —</div>
+    <div class="probe-clear" onclick="clearProbe()">✕ clear</div>
+  </div>
+
+  <div class="click-hint" id="clickHint">Click canvas to place lux probe</div>
+
+  <div class="legend">
+    <div class="leg-title">Legend</div>
+    <div id="legRows"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+//  THEME — canvas colour tokens, updated on toggle
+// ═══════════════════════════════════════════════════
+let DARK = false;
+
+// T = canvas theme palette, read inside every draw call
+const T = {};
+
+function applyTheme() {
+  if (DARK) {
+    Object.assign(T, {
+      bg:           '#06080d',
+      grid:         'rgba(255,255,255,0.022)',
+      muted:        '#3a5478',       // annotation secondary text
+      dim:          '#223850',       // very faint labels, ticks
+      bright:       '#acc6e4',
+      annotBg:      'rgba(11,14,23,0.80)',
+      annotBgStr:   [11,14,23],
+      graphBg:      'rgba(5,7,12,0.93)',
+      graphBorder:  '#151c2e',
+      graphAxis:    '#223344',
+      graphTickLn:  '#162030',
+      graphTick:    '#3a5270',
+      graphTitle:   '#4a6882',
+      surfaceLine:  'rgba(180,210,240,0.22)',
+      surfaceLbl:   '#3a5268',
+    });
+    document.documentElement.setAttribute('data-theme','dark');
+    document.getElementById('themeBtn').textContent = '☀️';
+  } else {
+    Object.assign(T, {
+      bg:           '#eef1f8',
+      grid:         'rgba(0,0,0,0.045)',
+      muted:        '#5a80a0',
+      dim:          '#7090a8',
+      bright:       '#1a2840',
+      annotBg:      'rgba(255,255,255,0.88)',
+      annotBgStr:   [255,255,255],
+      graphBg:      'rgba(250,252,255,0.96)',
+      graphBorder:  '#c8d8e8',
+      graphAxis:    '#b8cad8',
+      graphTickLn:  '#c0ccd8',
+      graphTick:    '#6080a0',
+      graphTitle:   '#5a7898',
+      surfaceLine:  'rgba(60,100,160,0.3)',
+      surfaceLbl:   '#7090a8',
+    });
+    document.documentElement.setAttribute('data-theme','light');
+    document.getElementById('themeBtn').textContent = '🌙';
+  }
+}
+
+function toggleTheme() {
+  DARK = !DARK;
+  applyTheme();
+}
+
+applyTheme();
+
+// ═══════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════
+const S = {
+  mode:    'lumen',
+  lumen:   { flux: 1600 },
+  candela: { intensity: 100, beamAngle: 30 },
+  nits:    { luminance: 400, area: 0.5 },
+  lux:     { lumens: 1000, height: 2.0 },
+  probe:   { active: false, cx: 0, cy: 0 }
+};
+
+// ═══════════════════════════════════════════════════
+//  CANVAS
+// ═══════════════════════════════════════════════════
+const canvas = document.getElementById('c');
+const ctx    = canvas.getContext('2d');
+
+function resize() {
+  const p = canvas.parentElement;
+  canvas.width  = p.clientWidth;
+  canvas.height = p.clientHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+// ═══════════════════════════════════════════════════
+//  PHOTON
+// ═══════════════════════════════════════════════════
+class Photon {
+  constructor(x,y,angle,speed,col) {
+    this.x=x; this.y=y;
+    this.vx=Math.cos(angle)*speed; this.vy=Math.sin(angle)*speed;
+    this.life=1.0; this.decay=0.007+Math.random()*0.013;
+    this.size=1.4+Math.random()*1.8; this.col=col||[255,225,100];
+    this.dead=false; this.bounced=false;
+  }
+  update(surfY) {
+    this.x+=this.vx; this.y+=this.vy; this.life-=this.decay;
+    if (this.life<=0){this.dead=true;return;}
+    if (surfY!==null&&!this.bounced&&this.y>=surfY&&this.vy>0) {
+      this.vy=-Math.abs(this.vy)*(0.25+Math.random()*0.4);
+      this.vx+=(Math.random()-0.5)*3;
+      this.col=[80,190,255]; this.decay*=2.2; this.bounced=true;
+    }
+  }
+  draw() {
+    const a=Math.max(0,this.life); const [r,g,b]=this.col;
+    ctx.save(); ctx.globalAlpha=a*0.85;
+    const gr=ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.size*6);
+    gr.addColorStop(0,`rgba(${r},${g},${b},0.7)`);
+    gr.addColorStop(0.4,`rgba(${r},${g},${b},0.2)`);
+    gr.addColorStop(1,`rgba(${r},${g},${b},0)`);
+    ctx.fillStyle=gr; ctx.beginPath(); ctx.arc(this.x,this.y,this.size*6,0,Math.PI*2); ctx.fill();
+    ctx.globalAlpha=a;
+    ctx.fillStyle=`rgba(${Math.min(255,r+60)},${Math.min(255,g+40)},${Math.min(255,b+60)},0.95)`;
+    ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+}
+
+let photons=[], frame=0;
+
+// ═══════════════════════════════════════════════════
+//  EMIT
+// ═══════════════════════════════════════════════════
+function emit() {
+  const W=canvas.width,H=canvas.height,m=S.mode;
+  if (m==='lumen') {
+    const n=Math.max(1,Math.round(S.lumen.flux/320)),cx=W/2,cy=H/2;
+    for(let i=0;i<n;i++) photons.push(new Photon(cx,cy,Math.random()*Math.PI*2,2+Math.random()*2.5));
+  } else if (m==='candela') {
+    const n=Math.max(1,Math.round(S.candela.intensity/25)),cx=W/2,cy=H*0.14;
+    const half=(S.candela.beamAngle/2)*(Math.PI/180);
+    for(let i=0;i<n;i++) photons.push(new Photon(cx,cy,Math.PI/2+(Math.random()-0.5)*half*2,2.8+Math.random()*2));
+  } else if (m==='nits') {
+    const n=Math.max(1,Math.round(S.nits.luminance/80)),cx=W/2,cy=H/2;
+    const sw=Math.sqrt(S.nits.area)*170,sh=Math.sqrt(S.nits.area)*110;
+    for(let i=0;i<n;i++){
+      const sx=cx+(Math.random()-0.5)*sw,sy=cy+(Math.random()-0.5)*sh;
+      photons.push(new Photon(sx,sy,-Math.PI/2+(Math.random()-0.5)*1.4,1.8+Math.random()*2,[160,210,255]));
+    }
+  } else {
+    const n=Math.max(1,Math.round(S.lux.lumens/280)),cx=W/2;
+    const srcY=Math.max(60,(canvas.height-70)-S.lux.height*55);
+    for(let i=0;i<n;i++){
+      const sp=0.55+S.lux.height*0.08;
+      photons.push(new Photon(cx,srcY,Math.PI/2+(Math.random()-0.5)*sp*2,2.5+Math.random()*2.5));
+    }
+  }
+  if(photons.length>700) photons.splice(0,photons.length-700);
+}
+
+// ═══════════════════════════════════════════════════
+//  DRAW HELPERS
+// ═══════════════════════════════════════════════════
+function srcGlow(x,y,r,bright) {
+  // Ambient glow — slightly dimmer in light mode so it reads on white
+  const factor = DARK ? 1 : 0.6;
+  let g=ctx.createRadialGradient(x,y,0,x,y,r*6*bright);
+  g.addColorStop(0,`rgba(255,200,60,${0.22*factor})`); g.addColorStop(0.4,`rgba(255,160,40,${0.08*factor})`); g.addColorStop(1,'rgba(255,120,20,0)');
+  ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y,r*6*bright,0,Math.PI*2); ctx.fill();
+  g=ctx.createRadialGradient(x,y,0,x,y,r*1.6);
+  g.addColorStop(0,'rgba(255,255,230,0.98)'); g.addColorStop(0.5,'rgba(255,210,80,0.7)'); g.addColorStop(1,'rgba(255,160,30,0)');
+  ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y,r*1.6,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle='#fffde0'; ctx.beginPath(); ctx.arc(x,y,r*0.45,0,Math.PI*2); ctx.fill();
+}
+
+function lbl(x,y,txt,col,align='center',size=12) {
+  ctx.font=`${size}px Outfit,sans-serif`; ctx.fillStyle=col; ctx.textAlign=align; ctx.fillText(txt,x,y);
+}
+function mlbl(x,y,txt,col,align='center',size=11) {
+  ctx.font=`${size}px 'JetBrains Mono',monospace`; ctx.fillStyle=col; ctx.textAlign=align; ctx.fillText(txt,x,y);
+}
+// Readable annotation label with themed backdrop pill
+function annotLbl(cx,y,txt,col,size=13) {
+  ctx.font=`${size}px Outfit,sans-serif`;
+  const tw=ctx.measureText(txt).width;
+  const [r,g,b]=T.annotBgStr;
+  ctx.fillStyle=`rgba(${r},${g},${b},0.82)`;
+  ctx.beginPath(); ctx.roundRect(cx-tw/2-10,y-size-2,tw+20,size+8,5); ctx.fill();
+  ctx.fillStyle=col; ctx.textAlign='center'; ctx.fillText(txt,cx,y);
+}
+
+function dimLine(x1,y1,x2,y2,txt,col,vert=false) {
+  col=col||T.muted;
+  ctx.strokeStyle=col; ctx.lineWidth=1; ctx.setLineDash([2,4]);
+  ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke(); ctx.setLineDash([]);
+  ctx.beginPath();
+  if (!vert){ctx.moveTo(x1,y1-4);ctx.lineTo(x1,y1+4);ctx.moveTo(x2,y2-4);ctx.lineTo(x2,y2+4);ctx.stroke();mlbl((x1+x2)/2,y1+14,txt,col,'center',10);}
+  else{ctx.moveTo(x1-4,y1);ctx.lineTo(x1+4,y1);ctx.moveTo(x2-4,y2);ctx.lineTo(x2+4,y2);ctx.stroke();ctx.save();ctx.translate(x1+16,(y1+y2)/2);ctx.rotate(-Math.PI/2);mlbl(0,0,txt,col,'center',10);ctx.restore();}
+}
+
+function grid(W,H) {
+  const sz=48; ctx.strokeStyle=T.grid; ctx.lineWidth=1;
+  for(let x=sz;x<W;x+=sz){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+  for(let y=sz;y<H;y+=sz){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+}
+
+// Amber colour from CSS (switches between dark/light amber)
+function amberCol() { return DARK ? '#f0a020' : '#d08010'; }
+function blueCol()  { return DARK ? '#4aabff' : '#1a80cc'; }
+function greenCol() { return DARK ? '#3dd68c' : '#1aaa60'; }
+
+// ═══════════════════════════════════════════════════
+//  MODE DRAW FUNCTIONS
+// ═══════════════════════════════════════════════════
+function drawLumen(W,H) {
+  const cx=W/2,cy=H/2,flux=S.lumen.flux,intens=flux/10000;
+  for(let r=55;r<=200;r+=45){
+    ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2);
+    ctx.strokeStyle=`rgba(240,160,48,${0.06*intens*Math.max(0,1-r/230)})`; ctx.lineWidth=1.5; ctx.stroke();
+  }
+  photons.forEach(p=>p.draw());
+  srcGlow(cx,cy,18,0.6+intens*1.2);
+  annotLbl(cx,cy-140,`Φv = ${flux.toLocaleString()} lm`,amberCol(),13);
+  lbl(cx,cy+165,'Omnidirectional — total light output, all directions',T.muted,'center',11);
+  for(let a=0;a<Math.PI*2;a+=Math.PI/4){
+    ctx.strokeStyle='rgba(240,160,48,0.12)'; ctx.lineWidth=1; ctx.setLineDash([3,6]);
+    ctx.beginPath(); ctx.moveTo(cx+Math.cos(a)*28,cy+Math.sin(a)*28); ctx.lineTo(cx+Math.cos(a)*90,cy+Math.sin(a)*90); ctx.stroke(); ctx.setLineDash([]);
+  }
+}
+
+function drawCandela(W,H) {
+  const cx=W/2,cy=H*0.14,cd=S.candela.intensity;
+  const half=(S.candela.beamAngle/2)*(Math.PI/180),beamLen=H*0.82;
+  ctx.save(); ctx.beginPath(); ctx.moveTo(cx,cy);
+  ctx.lineTo(cx+Math.sin(half)*beamLen,cy+Math.cos(half)*beamLen);
+  ctx.lineTo(cx-Math.sin(half)*beamLen,cy+Math.cos(half)*beamLen); ctx.closePath();
+  const cg=ctx.createLinearGradient(cx,cy,cx,cy+beamLen);
+  const aa=Math.min(0.14,0.025+cd/2500);
+  cg.addColorStop(0,`rgba(240,160,48,${aa*2})`); cg.addColorStop(0.6,`rgba(240,160,48,${aa})`); cg.addColorStop(1,'rgba(240,160,48,0)');
+  ctx.fillStyle=cg; ctx.fill(); ctx.restore();
+  ctx.strokeStyle='rgba(240,160,48,0.3)'; ctx.lineWidth=1.5; ctx.setLineDash([5,8]);
+  ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+Math.sin(half)*beamLen,cy+Math.cos(half)*beamLen); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx-Math.sin(half)*beamLen,cy+Math.cos(half)*beamLen); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.beginPath(); ctx.arc(cx,cy,90,Math.PI/2-half,Math.PI/2+half);
+  ctx.strokeStyle=`${blueCol()}99`; ctx.lineWidth=2.5; ctx.stroke();
+  const omega=(2*Math.PI*(1-Math.cos(half))).toFixed(2);
+  // Solid angle label with backdrop
+  annotLbl(cx,cy+116,`Ω = ${omega} sr`,blueCol(),11);
+  photons.forEach(p=>p.draw());
+  srcGlow(cx,cy,15,0.5+cd/600);
+  // Beam angle label
+  const ex=cx+Math.sin(half)*60+14,ey=cy+Math.cos(half)*60;
+  lbl(ex,ey,`${S.candela.beamAngle}°`,amberCol(),'left',12);
+  // Top-right annotation block
+  const lmE=(cd*2*Math.PI*(1-Math.cos(half))).toFixed(0);
+  const lines=[`Iv = ${cd} cd`,`Ω = ${omega} sr`,`≈ ${lmE} lm in beam`,`${S.candela.beamAngle}° beam`];
+  lines.forEach((l,i)=>{
+    const col=i===0?amberCol():T.muted, sz=i===0?13:11;
+    annotLbl(W-90,cy+24+i*20,l,col,sz);
+  });
+  lbl(cx,H-20,'Luminous intensity — directional flux per steradian',T.muted,'center',11);
+}
+
+function drawNits(W,H) {
+  const cx=W/2,cy=H/2,L=S.nits.luminance,A=S.nits.area;
+  const sw=Math.sqrt(A)*175,sh=Math.sqrt(A)*115;
+  const br=Math.min(0.28,L/3500);
+  const ag=ctx.createRadialGradient(cx,cy,0,cx,cy,Math.max(sw,sh)*1.5);
+  ag.addColorStop(0,`rgba(160,210,255,${br})`); ag.addColorStop(1,'rgba(100,170,255,0)');
+  ctx.fillStyle=ag; ctx.beginPath(); ctx.arc(cx,cy,Math.max(sw,sh)*1.5,0,Math.PI*2); ctx.fill();
+  const sb=Math.min(0.95,0.08+L/1200);
+  const rr=Math.min(220,120+L/35),gg=Math.min(235,150+L/40),bb=Math.min(255,220+L/100);
+  ctx.save(); ctx.shadowColor=`rgba(140,200,255,${Math.min(0.8,L/600)})`; ctx.shadowBlur=20+L/60;
+  ctx.fillStyle=`rgba(${rr},${gg},${bb},${sb})`; ctx.fillRect(cx-sw/2,cy-sh/2,sw,sh); ctx.restore();
+  ctx.strokeStyle='rgba(100,170,255,0.5)'; ctx.lineWidth=1.5; ctx.strokeRect(cx-sw/2,cy-sh/2,sw,sh);
+  ctx.save(); ctx.globalAlpha=0.06; ctx.strokeStyle='#000'; ctx.lineWidth=1;
+  for(let y=cy-sh/2+4;y<cy+sh/2;y+=6){ctx.beginPath();ctx.moveTo(cx-sw/2,y);ctx.lineTo(cx+sw/2,y);ctx.stroke();}
+  ctx.restore();
+  dimLine(cx-sw/2,cy+sh/2+18,cx+sw/2,cy+sh/2+18,`${Math.sqrt(A).toFixed(2)} m`);
+  dimLine(cx+sw/2+18,cy-sh/2,cx+sw/2+18,cy+sh/2,`${Math.sqrt(A).toFixed(2)} m`,null,true);
+  photons.forEach(p=>p.draw());
+  annotLbl(cx,cy-sh/2-42,`L = ${L.toLocaleString()} cd/m²  ·  A = ${A.toFixed(2)} m²`,amberCol(),13);
+  lbl(cx,cy-sh/2-24,`Total emitted intensity ≈ ${(L*A).toFixed(0)} cd`,T.muted,'center',11);
+  lbl(cx,H-20,'Luminance — light per unit area of the emitting/reflecting surface',T.muted,'center',11);
+}
+
+let _srcY=0,_surfY=0,_srcCx=0,_ppm=1;
+
+function drawLux(W,H) {
+  const lumens=S.lux.lumens,height=S.lux.height;
+  const cx=W/2,surfY=H-70,srcY=Math.max(60,surfY-height*55);
+  _srcY=srcY; _surfY=surfY; _srcCx=cx; _ppm=55;
+
+  const Iv=lumens/(4*Math.PI),lux=Iv/(height*height);
+  const spreadR=Math.max(30,Math.tan(0.4+height*0.06)*(surfY-srcY)*0.9);
+  const luxBr=Math.min(0.3,lux/800);
+  const sg=ctx.createRadialGradient(cx,surfY,0,cx,surfY,spreadR*1.3);
+  sg.addColorStop(0,`rgba(255,210,80,${luxBr})`); sg.addColorStop(0.55,`rgba(255,170,50,${luxBr*0.35})`); sg.addColorStop(1,'rgba(255,130,20,0)');
+  ctx.fillStyle=sg; ctx.fillRect(0,surfY-4,W,120);
+  ctx.beginPath(); ctx.moveTo(0,surfY); ctx.lineTo(W,surfY);
+  ctx.strokeStyle=T.surfaceLine; ctx.lineWidth=2; ctx.stroke();
+  lbl(50,surfY+18,'Receiving Surface',T.surfaceLbl,'left',11);
+  const boxW=Math.min(spreadR*0.6,72);
+  ctx.strokeStyle=`${blueCol()}88`; ctx.lineWidth=1; ctx.setLineDash([3,4]);
+  ctx.strokeRect(cx-boxW/2,surfY,boxW,16); ctx.setLineDash([]);
+  mlbl(cx,surfY+12,'1 m²',`${blueCol()}bb`,'center',9);
+  ctx.strokeStyle='rgba(255,180,40,0.15)'; ctx.lineWidth=1; ctx.setLineDash([2,5]);
+  ctx.beginPath(); ctx.ellipse(cx,surfY,spreadR,10,0,0,Math.PI*2); ctx.stroke(); ctx.setLineDash([]);
+  const lineX=cx+spreadR+22;
+  ctx.strokeStyle=`${blueCol()}44`; ctx.lineWidth=1; ctx.setLineDash([3,5]);
+  ctx.beginPath(); ctx.moveTo(lineX,srcY); ctx.lineTo(lineX,surfY); ctx.stroke(); ctx.setLineDash([]);
+  ctx.strokeStyle=`${blueCol()}55`; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(lineX-5,srcY);ctx.lineTo(lineX+5,srcY);ctx.moveTo(lineX-5,surfY);ctx.lineTo(lineX+5,surfY); ctx.stroke();
+  mlbl(lineX+8,(srcY+surfY)/2,`d = ${height.toFixed(1)} m`,blueCol(),'left',10);
+
+  // Right-side formula block — now with backdrops
+  annotLbl(W-80,srcY+20,`E = Iv / d²`,T.muted,11);
+  annotLbl(W-80,srcY+36,`= ${Iv.toFixed(1)} / ${(height*height).toFixed(2)}`,T.muted,10);
+  annotLbl(W-80,srcY+52,`= ${lux.toFixed(1)} lx`,greenCol(),12);
+
+  for(let i=photons.length-1;i>=0;i--){photons[i].update(surfY);if(photons[i].dead)photons.splice(i,1);}
+  photons.forEach(p=>p.draw());
+  srcGlow(cx,srcY,17,0.45+lumens/7000);
+  annotLbl(cx,srcY-42,`Φv = ${lumens.toLocaleString()} lm`,amberCol(),13);
+  lbl(cx,H-16,'Illuminance — light arriving at a surface per m²  ·  E ∝ 1/d²',T.muted,'center',11);
+  document.getElementById('bigNum').textContent=Math.round(lux);
+}
+
+// ═══════════════════════════════════════════════════
+//  LUX PROBE
+// ═══════════════════════════════════════════════════
+function calcProbe(px,py) {
+  const W=canvas.width,m=S.mode;
+  if(m==='lux'){
+    const Iv=S.lux.lumens/(4*Math.PI);
+    const dx=px-_srcCx,dy=py-_srcY;
+    const d=Math.sqrt(dx*dx+dy*dy)/_ppm;
+    if(d<0.05) return null;
+    return {lux:Iv/(d*d),distMetres:d};
+  }
+  if(m==='candela'){
+    const cx=canvas.width/2,cy=canvas.height*0.14,dx=px-cx,dy=py-cy;
+    const d=Math.sqrt(dx*dx+dy*dy)*0.018;
+    if(d<0.1) return null;
+    return {lux:S.candela.intensity/(d*d),distMetres:d};
+  }
+  if(m==='lumen'){
+    const cx=canvas.width/2,cy=canvas.height/2,dx=px-cx,dy=py-cy;
+    const d=Math.sqrt(dx*dx+dy*dy)*0.018;
+    if(d<0.1) return null;
+    const Iv=S.lumen.flux/(4*Math.PI);
+    return {lux:Iv/(d*d),distMetres:d};
+  }
+  if(m==='nits') return {lux:S.nits.luminance,distMetres:null,isLuminance:true};
+  return null;
+}
+
+function drawProbe(W,H) {
+  if(!S.probe.active) return;
+  const {cx:px,cy:py}=S.probe;
+  const result=calcProbe(px,py);
+  if(!result) return;
+  const pulse=0.5+0.5*Math.sin(frame*0.07);
+  const gc=greenCol();
+  ctx.save();
+  ctx.beginPath(); ctx.arc(px,py,22+pulse*4,0,Math.PI*2);
+  ctx.strokeStyle=`${gc}${DARK?'28':'40'}`; ctx.lineWidth=1.5; ctx.stroke();
+  ctx.beginPath(); ctx.arc(px,py,18,0,Math.PI*2);
+  ctx.strokeStyle=`${gc}b0`; ctx.lineWidth=1.5; ctx.stroke();
+  ctx.strokeStyle=`${gc}70`; ctx.lineWidth=1;
+  const g=7;
+  ctx.beginPath();
+  ctx.moveTo(px-(30),py); ctx.lineTo(px-g,py);
+  ctx.moveTo(px+g,py);    ctx.lineTo(px+(30),py);
+  ctx.moveTo(px,py-(30)); ctx.lineTo(px,py-g);
+  ctx.moveTo(px,py+g);    ctx.lineTo(px,py+(30));
+  ctx.stroke();
+  ctx.fillStyle=gc; ctx.beginPath(); ctx.arc(px,py,2.5,0,Math.PI*2); ctx.fill();
+  if(S.mode==='lux'&&result.distMetres!==null){
+    ctx.strokeStyle=`${gc}28`; ctx.lineWidth=1; ctx.setLineDash([2,5]);
+    ctx.beginPath(); ctx.moveTo(_srcCx,_srcY); ctx.lineTo(px,py); ctx.stroke(); ctx.setLineDash([]);
+  }
+  ctx.restore();
+
+  const chip=document.getElementById('probeChip');
+  const chipW=150,chipH=88;
+  let cx2=px+28,cy2=py-chipH/2;
+  if(cx2+chipW>W-10) cx2=px-chipW-22;
+  if(cy2<10) cy2=10;
+  if(cy2+chipH>H-10) cy2=H-chipH-10;
+  chip.style.left=cx2+'px'; chip.style.top=cy2+'px';
+  chip.classList.add('visible');
+
+  const lxEl=document.getElementById('probeLux'),dtEl=document.getElementById('probeDist');
+  if(result.isLuminance){
+    lxEl.textContent=`${result.lux.toLocaleString()} nit`;
+    dtEl.textContent='constant — any distance';
+  } else {
+    const v=result.lux,vStr=v>=1000?v.toFixed(0):v>=10?v.toFixed(1):v.toFixed(2);
+    lxEl.textContent=`${vStr} lx`;
+    dtEl.textContent=result.distMetres!==null?`d = ${result.distMetres.toFixed(2)} m`:'';
+  }
+}
+
+function clearProbe(){
+  S.probe.active=false;
+  document.getElementById('probeChip').classList.remove('visible');
+}
+
+canvas.addEventListener('click',e=>{
+  const rect=canvas.getBoundingClientRect();
+  S.probe.cx=(e.clientX-rect.left)*(canvas.width/rect.width);
+  S.probe.cy=(e.clientY-rect.top)*(canvas.height/rect.height);
+  S.probe.active=true;
+});
+
+// ═══════════════════════════════════════════════════
+//  E vs DISTANCE GRAPH
+// ═══════════════════════════════════════════════════
+function drawGraph(W,H) {
+  const GW=230,GH=160,GX=W-GW-14,GY=H-GH-14;
+  const PAD={l:46,r:12,t:24,b:30};
+  const PW=GW-PAD.l-PAD.r,PH=GH-PAD.t-PAD.b;
+  const ax=GX+PAD.l,ay=GY+PAD.t;
+  ctx.save();
+
+  // Panel
+  ctx.fillStyle=T.graphBg; ctx.strokeStyle=T.graphBorder; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.roundRect(GX,GY,GW,GH,8); ctx.fill(); ctx.stroke();
+
+  const m=S.mode;
+  let Iv,yLabel='E (lx)',lineCol=amberCol(),titleTxt='',maxD=8;
+  if(m==='lux')     {Iv=S.lux.lumens/(4*Math.PI);titleTxt='E vs Distance — Inverse Square Law';}
+  else if(m==='candela'){Iv=S.candela.intensity;titleTxt='Lux from source vs Distance';}
+  else if(m==='lumen') {Iv=S.lumen.flux/(4*Math.PI);titleTxt='Avg E vs Distance (point source)';}
+  else {yLabel='L (cd/m²)';lineCol=blueCol();titleTxt='Luminance vs Distance';}
+
+  ctx.font='9px Outfit'; ctx.fillStyle=T.graphTitle; ctx.textAlign='left';
+  ctx.fillText(titleTxt,ax,GY+15);
+
+  ctx.strokeStyle=T.graphAxis; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(ax,ay+PH); ctx.lineTo(ax+PW,ay+PH); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(ax,ay); ctx.lineTo(ax,ay+PH); ctx.stroke();
+
+  ctx.font='9px JetBrains Mono'; ctx.fillStyle=T.graphTick; ctx.textAlign='center';
+  ctx.fillText('d (m)',ax+PW/2,GY+GH-4);
+  ctx.save(); ctx.translate(GX+8,ay+PH/2); ctx.rotate(-Math.PI/2); ctx.fillText(yLabel,0,0); ctx.restore();
+
+  [1,2,3,4,5,6,7,8].forEach(d=>{
+    const tx=ax+(d/maxD)*PW;
+    ctx.strokeStyle=T.graphTickLn; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(tx,ay+PH); ctx.lineTo(tx,ay+PH+3); ctx.stroke();
+    ctx.font='8px JetBrains Mono'; ctx.fillStyle=T.graphTick; ctx.textAlign='center';
+    ctx.fillText(d,tx,ay+PH+11);
+  });
+
+  if(m!=='nits'){
+    const eMax=Iv/(0.25*0.25),eMin=Math.max(Iv/(maxD*maxD),0.001);
+    const logMax=Math.log10(eMax),logMin=Math.log10(eMin),logRange=logMax-logMin;
+    const eToY=E=>ay+PH-((Math.log10(Math.max(E,0.0001))-logMin)/logRange)*PH;
+    const dToX=d=>ax+(d/maxD)*PW;
+
+    // Shaded fill
+    ctx.beginPath(); ctx.moveTo(dToX(0.25),ay+PH);
+    for(let d=0.25;d<=maxD;d+=0.04) ctx.lineTo(dToX(d),eToY(Iv/(d*d)));
+    ctx.lineTo(dToX(maxD),ay+PH); ctx.closePath();
+    const sh=ctx.createLinearGradient(ax,ay,ax,ay+PH);
+    sh.addColorStop(0,DARK?'rgba(240,160,32,0.12)':'rgba(208,128,16,0.1)');
+    sh.addColorStop(1,DARK?'rgba(240,160,32,0)':'rgba(208,128,16,0)');
+    ctx.fillStyle=sh; ctx.fill();
+
+    // Curve
+    ctx.beginPath(); ctx.strokeStyle=lineCol; ctx.lineWidth=1.8;
+    let first=true;
+    for(let d=0.25;d<=maxD;d+=0.035){
+      const ty=eToY(Iv/(d*d));
+      if(ty<ay-2||ty>ay+PH+2){first=true;continue;}
+      first?ctx.moveTo(dToX(d),ty):ctx.lineTo(dToX(d),ty); first=false;
+    }
+    ctx.stroke();
+
+    // Y ticks
+    const nYT=Math.max(2,Math.floor(logRange));
+    for(let i=0;i<=nYT;i++){
+      const logV=logMin+i*(logRange/nYT),val=Math.pow(10,logV);
+      const ty=eToY(val); if(ty<ay||ty>ay+PH) continue;
+      ctx.strokeStyle=T.graphTickLn; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(ax-3,ty); ctx.lineTo(ax,ty); ctx.stroke();
+      ctx.font='8px JetBrains Mono'; ctx.fillStyle=T.graphTick; ctx.textAlign='right';
+      ctx.fillText(val>=1000?`${(val/1000).toFixed(0)}k`:val>=100?val.toFixed(0):val>=10?val.toFixed(0):val.toFixed(1),ax-4,ty+3);
+    }
+
+    // Operating point (lux mode)
+    if(m==='lux'){
+      const ad=Math.min(S.lux.height,maxD);
+      const tx=dToX(ad),ty=eToY(Iv/(ad*ad));
+      ctx.strokeStyle=`${amberCol()}50`; ctx.lineWidth=1; ctx.setLineDash([2,3]);
+      ctx.beginPath(); ctx.moveTo(tx,ay+PH); ctx.lineTo(tx,ty); ctx.stroke();
+      ctx.strokeStyle=`${amberCol()}28`;
+      ctx.beginPath(); ctx.moveTo(ax,ty); ctx.lineTo(tx,ty); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle=amberCol(); ctx.shadowColor=amberCol(); ctx.shadowBlur=DARK?8:4;
+      ctx.beginPath(); ctx.arc(tx,ty,4,0,Math.PI*2); ctx.fill(); ctx.shadowBlur=0;
+      const E_act=Iv/(ad*ad),eStr=E_act>=1000?E_act.toFixed(0):E_act>=10?E_act.toFixed(1):E_act.toFixed(2);
+      ctx.font='9px JetBrains Mono'; ctx.fillStyle=amberCol();
+      ctx.textAlign=tx>ax+PW*0.65?'right':'left';
+      ctx.fillText(`${eStr}lx`,tx+(tx>ax+PW*0.65?-7:7),ty+(ty<ay+18?12:-5));
+    }
+
+    // Probe point
+    if(S.probe.active){
+      const pr=calcProbe(S.probe.cx,S.probe.cy);
+      if(pr&&!pr.isLuminance&&pr.distMetres!==null){
+        const pd=Math.min(pr.distMetres,maxD);
+        const ptx=dToX(pd),pty=eToY(Iv/(pd*pd));
+        if(pty>=ay-3&&pty<=ay+PH+3){
+          ctx.strokeStyle=`${greenCol()}40`; ctx.lineWidth=1; ctx.setLineDash([2,4]);
+          ctx.beginPath(); ctx.moveTo(ptx,ay+PH); ctx.lineTo(ptx,pty); ctx.stroke(); ctx.setLineDash([]);
+          ctx.fillStyle=greenCol(); ctx.shadowColor=greenCol(); ctx.shadowBlur=DARK?7:3;
+          ctx.beginPath(); ctx.arc(ptx,pty,3.5,0,Math.PI*2); ctx.fill(); ctx.shadowBlur=0;
+          const pv=Iv/(pd*pd),pvStr=pv>=1000?pv.toFixed(0):pv>=10?pv.toFixed(1):pv.toFixed(2);
+          ctx.font='8px JetBrains Mono'; ctx.fillStyle=greenCol();
+          ctx.textAlign=ptx>ax+PW*0.65?'right':'left';
+          ctx.fillText(`${pvStr}lx`,ptx+(ptx>ax+PW*0.65?-6:5),pty-5);
+        }
+      }
+    }
+
+    ctx.font='9px Outfit'; ctx.fillStyle=T.graphTick; ctx.textAlign='right';
+    ctx.fillText('E ∝ 1/d²',ax+PW-2,ay+12);
+
+  } else {
+    const L=S.nits.luminance,flatY=ay+PH*0.36;
+    ctx.fillStyle=DARK?'rgba(74,171,255,0.07)':'rgba(26,128,204,0.07)';
+    ctx.fillRect(ax,flatY,PW,ay+PH-flatY);
+    ctx.strokeStyle=blueCol(); ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(ax,flatY); ctx.lineTo(ax+PW,flatY); ctx.stroke();
+    ctx.strokeStyle=T.graphTickLn; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(ax-3,flatY); ctx.lineTo(ax,flatY); ctx.stroke();
+    ctx.font='8px JetBrains Mono'; ctx.fillStyle=T.graphTick; ctx.textAlign='right';
+    ctx.fillText(L>=1000?`${(L/1000).toFixed(1)}k`:L,ax-4,flatY+3);
+    ctx.fillText('0',ax-4,ay+PH+3);
+    ctx.font='9px JetBrains Mono'; ctx.fillStyle=blueCol(); ctx.textAlign='left';
+    ctx.fillText(`L = ${L} cd/m²`,ax+4,flatY-5);
+    ctx.font='9px Outfit'; ctx.fillStyle=T.graphTick; ctx.textAlign='center';
+    ctx.fillText('Constant regardless of viewing distance',ax+PW/2,ay+PH-6);
+  }
+
+  ctx.restore();
+}
+
+// ═══════════════════════════════════════════════════
+//  LOOP
+// ═══════════════════════════════════════════════════
+function loop() {
+  frame++;
+  const W=canvas.width,H=canvas.height;
+  if(frame%2===0) emit();
+  if(S.mode!=='lux'){
+    for(let i=photons.length-1;i>=0;i--){photons[i].update(null);if(photons[i].dead)photons.splice(i,1);}
+  }
+  ctx.fillStyle=T.bg; ctx.fillRect(0,0,W,H);
+  grid(W,H);
+  if(S.mode==='lumen')       drawLumen(W,H);
+  else if(S.mode==='candela') drawCandela(W,H);
+  else if(S.mode==='nits')    drawNits(W,H);
+  else                         drawLux(W,H);
+  drawProbe(W,H);
+  drawGraph(W,H);
+  mlbl(W-14,H-14,`${photons.length} photons`,T.dim,'right',9);
+  requestAnimationFrame(loop);
+}
+
+// ═══════════════════════════════════════════════════
+//  MODE CONFIG
+// ═══════════════════════════════════════════════════
+const MODES = {
+  lumen:{
+    symbol:'lm',
+    desc:`The <strong style="color:var(--text-bright)">lumen (lm)</strong> measures total <em>luminous flux</em> — the total quantity of visible light emitted by a source in all directions. It's the "total amount" of light, regardless of direction or surface area.`,
+    formula:'Φv = Iv × Ω   (lm = cd · sr)',
+    controls:[{id:'flux',label:'Luminous Flux',min:100,max:10000,step:100,unit:'lm',grp:'lumen'}],
+    examples:['Candle: ~12 lm','40W incandescent: ~450 lm','100W incandescent: ~1,600 lm','LED bulb (equiv 100W): ~1,600 lm','Car headlight: ~2,000–4,000 lm'],
+    getDerived(){const f=S.lumen.flux,avg=(f/(4*Math.PI)).toFixed(1);return[['Solid angle (full sphere)','4π ≈ 12.57 sr'],['Average intensity',`${avg} cd`],['At 1 m (avg)',`${avg} lx`]];},
+    getPrimary(){return S.lumen.flux;}
+  },
+  candela:{
+    symbol:'cd',
+    desc:`The <strong style="color:var(--text-bright)">candela (cd)</strong> measures <em>luminous intensity</em> — brightness in a specific direction. The same lumens focused into a narrower beam produce higher candela. It is the SI base unit for light.`,
+    formula:'Iv = dΦv / dΩ   (lm / sr)',
+    controls:[{id:'intensity',label:'Luminous Intensity',min:1,max:1000,step:1,unit:'cd',grp:'candela'},{id:'beamAngle',label:'Beam Angle',min:5,max:180,step:1,unit:'°',grp:'candela'}],
+    examples:['Candle: ~1 cd','White LED (bare): ~10–50 cd','Car headlight: ~700–1,200 cd','Stadium floodlight: ~100,000 cd','Lighthouse: > 1,000,000 cd'],
+    getDerived(){const cd=S.candela.intensity,h=(S.candela.beamAngle/2)*(Math.PI/180),o=(2*Math.PI*(1-Math.cos(h))).toFixed(3);return[['Solid angle (Ω)',`${o} sr`],['Flux in beam',`${(cd*parseFloat(o)).toFixed(0)} lm`],['Lux at 1 m',`${cd} lx`],['Lux at 2 m',`${(cd/4).toFixed(1)} lx`],['Lux at 5 m',`${(cd/25).toFixed(2)} lx`]];},
+    getPrimary(){return S.candela.intensity;}
+  },
+  nits:{
+    symbol:'cd/m²',
+    desc:`A <strong style="color:var(--text-bright)">nit (cd/m²)</strong> measures <em>luminance</em> — how bright a surface <em>appears</em> per unit area, whether it emits or reflects light. This is what your eye perceives, regardless of distance.`,
+    formula:'Lv = d²Φv / (dA · dΩ · cosθ)  ≈  Iv / A',
+    controls:[{id:'luminance',label:'Luminance',min:50,max:5000,step:50,unit:'nit',grp:'nits'},{id:'area',label:'Surface Area',min:0.1,max:4,step:0.05,unit:'m²',grp:'nits'}],
+    examples:['Night sky: ~0.001 nit','Candlelight (face): ~1–5 nit','Laptop LCD: 300–500 nit','Smartphone HDR peak: 1,000–2,000 nit','Overcast sky: ~1,000 nit','Clear blue sky: ~8,000 nit','Direct sun disc: ~1.6 billion nit'],
+    getDerived(){const L=S.nits.luminance,A=S.nits.area,c=(L*A).toFixed(1);return[['Surface area',`${A.toFixed(2)} m²`],['Total intensity',`${c} cd`],['Approx flux',`${(parseFloat(c)*Math.PI).toFixed(0)} lm`],['Perceived brightness','constant at any d']];},
+    getPrimary(){return S.nits.luminance;}
+  },
+  lux:{
+    symbol:'lx',
+    desc:`The <strong style="color:var(--text-bright)">lux (lx)</strong> measures <em>illuminance</em> — the amount of light <em>arriving at</em> a surface per square metre. Lux drops with the square of distance from the source (inverse square law).`,
+    formula:'Ev = Φv / A  =  Iv / d²   (lm / m²)',
+    controls:[{id:'lumens',label:'Source Output',min:100,max:5000,step:100,unit:'lm',grp:'lux'},{id:'height',label:'Source Height (d)',min:0.5,max:8.0,step:0.1,unit:'m',grp:'lux'}],
+    examples:['Full moon: ~1 lx','Street lighting: 10–20 lx','Stairwell: ~50 lx','Office: 300–500 lx','Bright office: 750–1,000 lx','Overcast outdoor: ~1,000 lx','Full sunlight: ~100,000 lx'],
+    getDerived(){const f=S.lux.lumens,d=S.lux.height,Iv=f/(4*Math.PI),lux=Iv/(d*d);return[['Point source intensity',`${Iv.toFixed(1)} cd`],['Distance',`${d.toFixed(1)} m`],['Illuminance (E)',`${lux.toFixed(1)} lx`],['At 2× distance',`${(Iv/(d*2)**2).toFixed(1)} lx`],['At ½ distance',`${(Iv/(d*0.5)**2).toFixed(1)} lx`]];},
+    getPrimary(){const Iv=S.lux.lumens/(4*Math.PI);return Math.round(Iv/(S.lux.height*S.lux.height));}
+  }
+};
+
+const legendConfig={
+  lumen:  [{col:'#ffe07a',lbl:'Photons (luminous flux)'},{col:'rgba(240,160,48,0.5)',lbl:'Ambient field'},{col:'var(--green)',lbl:'Probe — click to measure'}],
+  candela:[{col:'#ffe07a',lbl:'Photons in beam'},{col:'rgba(240,160,48,0.3)',lbl:'Beam cone'},{col:'var(--blue)',lbl:'Solid angle arc'},{col:'var(--green)',lbl:'Probe — click to measure'}],
+  nits:   [{col:'#a0d2ff',lbl:'Emitted photons'},{col:'rgba(140,200,255,0.8)',lbl:'Emitting surface'},{col:'var(--green)',lbl:'Probe — shows luminance'}],
+  lux:    [{col:'#ffe07a',lbl:'Incident photons'},{col:'#50beff',lbl:'Reflected photons'},{col:'rgba(255,200,60,0.5)',lbl:'Illuminated area'},{col:'var(--green)',lbl:'Probe — click to measure'}]
+};
+
+// ═══════════════════════════════════════════════════
+//  UI BUILD
+// ═══════════════════════════════════════════════════
+function setMode(m) {
+  S.mode=m; photons=[]; clearProbe();
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['lumen','candela','nits','lux'][i]===m));
+  const cfg=MODES[m];
+  document.getElementById('bigUnit').textContent=cfg.symbol;
+  document.getElementById('desc').innerHTML=cfg.desc;
+  document.getElementById('formulaEq').textContent=cfg.formula;
+  document.getElementById('clickHint').textContent=m==='nits'?'Click canvas — probe shows constant luminance':'Click canvas to place lux probe anywhere';
+
+  const cEl=document.getElementById('controls'); cEl.innerHTML='';
+  cfg.controls.forEach(c=>{
+    const val=S[c.grp][c.id],pct=((val-c.min)/(c.max-c.min))*100;
+    const disp=Number.isInteger(val)?val:val.toFixed(c.step<1?2:0);
+    const d=document.createElement('div'); d.className='ctrl';
+    d.innerHTML=`<div class="ctrl-row"><span class="ctrl-name">${c.label}</span><span class="ctrl-val" id="cv-${c.id}">${disp} ${c.unit}</span></div><input type="range" min="${c.min}" max="${c.max}" step="${c.step}" value="${val}" style="--p:${pct}%" data-grp="${c.grp}" data-id="${c.id}" data-unit="${c.unit}" data-min="${c.min}" data-max="${c.max}">`;
+    cEl.appendChild(d);
+  });
+  cEl.querySelectorAll('input[type=range]').forEach(inp=>inp.addEventListener('input',onSlider));
+
+  document.getElementById('legRows').innerHTML=(legendConfig[m]||[]).map(l=>
+    `<div class="leg-row"><div class="leg-dot" style="background:${l.col}"></div><span class="leg-lbl">${l.lbl}</span></div>`).join('');
+
+  renderDerived(); renderExamples(); renderBigNum(); renderOverlay();
+}
+
+function onSlider(e) {
+  const {grp,id,unit,min,max}=e.target.dataset;
+  const val=parseFloat(e.target.value);
+  S[grp][id]=val;
+  e.target.style.setProperty('--p',((val-parseFloat(min))/(parseFloat(max)-parseFloat(min))*100)+'%');
+  const cv=document.getElementById(`cv-${id}`);
+  if(cv) cv.textContent=`${Number.isInteger(val)?val:val.toFixed(2)} ${unit}`;
+  renderDerived(); renderBigNum(); renderOverlay();
+}
+
+function renderDerived() {
+  document.getElementById('derived').innerHTML=`<div class="derived-eye">Derived Values</div>`+
+    MODES[S.mode].getDerived().map(([l,v])=>`<div class="drow"><span class="drow-lbl">${l}</span><span class="drow-val">${v}</span></div>`).join('');
+}
+function renderExamples() {
+  document.getElementById('examples').innerHTML=`<div class="ex-eye">Real-world Examples</div>`+
+    MODES[S.mode].examples.map(e=>`<div class="ex-item"><div class="ex-dot"></div><span>${e}</span></div>`).join('');
+}
+function renderBigNum() {
+  const p=MODES[S.mode].getPrimary();
+  document.getElementById('bigNum').textContent=typeof p==='number'&&!Number.isInteger(p)?p.toFixed(1):p;
+}
+function renderOverlay() {
+  const m=S.mode; let rows=[];
+  if(m==='lumen'){const f=S.lumen.flux;rows=[['Flux (Φv)',`${f.toLocaleString()} lm`],['Avg intensity',`${(f/(4*Math.PI)).toFixed(1)} cd`],['Photons on screen',photons.length]];}
+  else if(m==='candela'){const h=(S.candela.beamAngle/2)*(Math.PI/180),o=(2*Math.PI*(1-Math.cos(h))).toFixed(2);rows=[['Intensity (Iv)',`${S.candela.intensity} cd`],['Solid angle',`${o} sr`],['Lux at 1 m',`${S.candela.intensity} lx`]];}
+  else if(m==='nits'){rows=[['Luminance (Lv)',`${S.nits.luminance} cd/m²`],['Area',`${S.nits.area.toFixed(2)} m²`],['Total intensity',`${(S.nits.luminance*S.nits.area).toFixed(1)} cd`]];}
+  else{const Iv=S.lux.lumens/(4*Math.PI),lux=Iv/(S.lux.height*S.lux.height);rows=[['Source',`${S.lux.lumens} lm`],['Distance',`${S.lux.height.toFixed(1)} m`],['Illuminance',`${lux.toFixed(1)} lx`]];}
+  document.getElementById('ovRows').innerHTML=rows.map(([l,v],i)=>`<div class="ov-row"><span class="ov-lbl">${l}</span><span class="ov-val${i===0?' hi':''}">${v}</span></div>`).join('');
+}
+
+// ─── BOOT ───
+setMode('lumen');
+loop();
+</script>
+</body>
+</html>
