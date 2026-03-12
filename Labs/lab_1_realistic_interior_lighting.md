@@ -30,7 +30,7 @@ This tutorial outlines a practical professional workflow for creating **hyper-re
 
 The workflow combines **Lumen**, physically motivated sky lighting, careful exposure control, post-processing, atmospheric depth, and subtle camera imperfections. Used properly, these help a scene move away from the flat, overly clean, synthetic look that often appears in inexperienced real-time work.
 
-This topic directly supports the module’s focus on **rendering, lighting, shader use, post-processing, and atmosphere design** within 3D game production. In particular, it aligns strongly with the module emphasis on rendering and lighting practice, lighting theory, post-processing, ambient occlusion, volumetric light scattering, and production-level implementation in Unreal Engine. fileciteturn0file0
+This topic directly supports the module’s focus on **rendering, lighting, shader use, post-processing, and atmosphere design** within 3D game production. In particular, it aligns strongly with the module emphasis on rendering and lighting practice, lighting theory, post-processing, ambient occlusion, volumetric light scattering, and production-level implementation in Unreal Engine. 
 
 It also supports the current ICA emphasis on **environmental storytelling**, **storytelling through materials**, **playability**, and the use of lighting as part of a small but polished spatial experience. In a contained room-scale micro-experience, lighting is not decoration. It is one of the main tools used to guide the player, shape mood, reveal surfaces, and communicate world state. 
 
