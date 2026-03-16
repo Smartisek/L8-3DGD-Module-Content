@@ -32,7 +32,7 @@ p {
 pre, code, kbd, samp, li { text-align: left; }
 </style>
 
-# Realistic Interior and Exterior Lighting in Unreal Engine
+# Lab 1: Realistic Interior and Exterior Lighting in Unreal Engine
 
 ## Overview
 
