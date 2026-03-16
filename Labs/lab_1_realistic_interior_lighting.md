@@ -1,5 +1,5 @@
 ---
-title: "Hyper-Realistic Interior and Exterior Lighting in Unreal Engine 5"
+title: "Realistic Interior and Exterior Lighting in Unreal Engine 5"
 subtitle: "A Professional Workflow Using UE5 Default Lighting, Lumen, and Post-Processing"
 author: "Niall McGuinness"
 institute: "Dundalk Institute of Technology"
@@ -31,6 +31,8 @@ p {
 }
 pre, code, kbd, samp, li { text-align: left; }
 </style>
+
+# Realistic Interior and Exterior Lighting in Unreal Engine
 
 ## Overview
 

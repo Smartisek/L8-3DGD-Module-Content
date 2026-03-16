@@ -31,5 +31,6 @@ This repository contains all notes and assignment briefs materials for **COMP I8
 | Week | Filename | Description | Link |
 | :- | :- | :- | :- |
 | 1 | `lab_1_realistic_interior_lighting.md` | A practical lab on building believable interior and exterior lighting using Lumen, skylight / directional light / sky atmosphere, post-process exposure control, atmospheric effects, and final tuning. Students should use either their ICA escape-room greybox or a CubeGrid corridor / room study. | [UE5 Lighting Tutorial](/Labs/lab_1_realistic_interior_lighting.md) |
+| 2 | `lab_2_inspection_system_part_a.md` *(Work In Progress)*  |A practical lab on building an object inspection system using Blueprint Interfaces, Scene Capture 2D, Render Targets, UI materials, and stateful input routing. Covers core system construction through to a fully functional inspect, rotate, zoom, and exit workflow. Directly implements the **Examine** verb required by ICA-1. | [UE5 Lab: Building an Object Inspection System](/Labs/lab_2_inspection_system_part_a.md) |
 
 
